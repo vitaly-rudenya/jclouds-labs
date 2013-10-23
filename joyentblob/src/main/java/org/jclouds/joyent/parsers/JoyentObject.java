@@ -16,14 +16,11 @@
  */
 package org.jclouds.joyent.parsers;
 
+import org.jclouds.date.internal.SimpleDateFormatDateService;
 import org.jclouds.openstack.swift.domain.ObjectInfo;
 
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Date: 15.10.13
@@ -33,7 +30,8 @@ import java.util.Locale;
  */
 public class JoyentObject implements ObjectInfo {
 
-   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'", Locale.ENGLISH);
+   //private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'", Locale.ENGLISH);
+   private static final SimpleDateFormatDateService DATE_FORMAT = new SimpleDateFormatDateService();
    public static final String TYPE_FOLDER = "directory";
    public static final String TYPE_BLOB = "object";
 
@@ -69,11 +67,7 @@ public class JoyentObject implements ObjectInfo {
 
    @Override
    public Date getLastModified() {
-      try {
-         return mtime == null ? null : DATE_FORMAT.parse(mtime);
-      } catch (ParseException e) {
-         return null;
-      }
+      return mtime == null ? null : DATE_FORMAT.iso8601DateParse(mtime);
    }
 
    @Override

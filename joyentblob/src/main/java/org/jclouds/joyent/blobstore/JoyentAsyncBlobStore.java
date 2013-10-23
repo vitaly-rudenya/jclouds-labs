@@ -20,8 +20,6 @@ import com.google.common.base.Supplier;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jclouds.Constants;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
@@ -30,6 +28,7 @@ import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.internal.BaseAsyncBlobStore;
 import org.jclouds.blobstore.options.CreateContainerOptions;
+import org.jclouds.blobstore.options.GetOptions;
 import org.jclouds.blobstore.options.ListContainerOptions;
 import org.jclouds.blobstore.options.PutOptions;
 import org.jclouds.blobstore.util.BlobUtils;
@@ -37,8 +36,9 @@ import org.jclouds.collect.Memoized;
 import org.jclouds.domain.Location;
 import org.jclouds.joyent.JoyentBlobAsyncClient;
 import org.jclouds.joyent.functions.ListBlobsResponseToResourceList;
-import org.jclouds.blobstore.options.GetOptions;
+import org.jclouds.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -48,19 +48,17 @@ import java.util.concurrent.ExecutionException;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Date: 30.09.13
- * Time: 10:03
- *
  * @author vitaly.rudenya
  */
 @Singleton
 public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
 
-   private static final Log LOGGER = LogFactory.getLog(JoyentAsyncBlobStore.class);
+   @Resource
+   protected Logger logger = Logger.CONSOLE;
 
    private final JoyentBlobAsyncClient async;
    private final ListeningExecutorService userExecutor;
-   private ListBlobsResponseToResourceList converter;
+   private final ListBlobsResponseToResourceList converter;
 
    @Inject
    JoyentAsyncBlobStore(BlobStoreContext context, BlobUtils blobUtils,
@@ -126,10 +124,10 @@ public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
       try {
          return !containerExists(container).get();
       } catch (InterruptedException e) {
-         LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
+         logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
          return true;
       } catch (ExecutionException e) {
-         LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
+         logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
          return true;
       }
    }

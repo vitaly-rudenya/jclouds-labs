@@ -44,9 +44,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Singleton
 public class JoyentBlobStore extends BaseBlobStore {
-   private final JoyentBlobClient sync;
 
-   private ListBlobsResponseToResourceList listBlobsResponseToResourceList;
+   private final JoyentBlobClient sync;
+   private final ListBlobsResponseToResourceList listBlobsResponseToResourceList;
 
    @Inject
    JoyentBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,

@@ -19,15 +19,15 @@ package org.jclouds.joyent.parsers;
 import com.google.common.base.Function;
 import com.google.inject.TypeLiteral;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.internal.PageSetImpl;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.Json;
+import org.jclouds.logging.Logger;
 import org.jclouds.openstack.swift.domain.ObjectInfo;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +42,11 @@ import java.util.Set;
  */
 public class ParseObjectInfoListFromJoyentResponse implements Function<HttpResponse, PageSet<ObjectInfo>> {
 
-   private static final Log LOG = LogFactory.getLog(ParseObjectInfoListFromJoyentResponse.class);
-
    @Inject
    private Json json;
+
+   @Resource
+   protected Logger logger = Logger.CONSOLE;
 
    private static final TypeLiteral<PageSet<JoyentObject>> type = new TypeLiteral<PageSet<JoyentObject>>() {
    };
@@ -74,7 +75,7 @@ public class ParseObjectInfoListFromJoyentResponse implements Function<HttpRespo
                   stream.close();
             }
          } catch (IOException ex) {
-            LOG.error(ex);
+            logger.error(ex, "Can't read response");
          }
       }
       return null;

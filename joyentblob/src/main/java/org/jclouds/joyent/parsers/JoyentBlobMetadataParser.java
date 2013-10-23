@@ -18,17 +18,17 @@ package org.jclouds.joyent.parsers;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jclouds.blobstore.domain.MutableBlobMetadata;
 import org.jclouds.blobstore.domain.StorageType;
 import org.jclouds.domain.Credentials;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.joyent.JoyentConstants;
+import org.jclouds.logging.Logger;
 import org.jclouds.rest.InvocationContext;
 import org.jclouds.rest.internal.GeneratedHttpRequest;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import java.net.URI;
@@ -46,7 +46,8 @@ import java.util.List;
 abstract class JoyentBlobMetadataParser<RETURN> implements Function<HttpResponse, RETURN>,
         InvocationContext<JoyentBlobMetadataParser<RETURN>> {
 
-   private static final Log LOGGER = LogFactory.getLog(ParseBlobFromJoyentResponse.class);
+   @Resource
+   protected Logger logger = Logger.CONSOLE;
 
    private String identity;
 
@@ -99,7 +100,7 @@ abstract class JoyentBlobMetadataParser<RETURN> implements Function<HttpResponse
          try {
             uri = new URI(newUrl);
          } catch (URISyntaxException e) {
-            LOGGER.warn("Can't parse URL " + newUrl, e);
+            logger.warn(e, "Can't parse URL " + newUrl);
          }
       }
 

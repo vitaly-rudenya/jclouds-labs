@@ -25,9 +25,6 @@ import org.jclouds.joyent.blobstore.JoyentAsyncBlobStore;
 import org.jclouds.joyent.blobstore.JoyentBlobStore;
 
 /**
- * Date: 30.09.13
- * Time: 11:04
- *
  * @author vitaly.rudenya
  */
 public class JoyentBlobStoreContextModule extends AbstractModule {
