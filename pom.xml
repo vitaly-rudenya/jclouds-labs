@@ -73,6 +73,7 @@
     <module>cloudsigma2-lvs</module>
     <module>cloudsigma2-zrh</module>
     <module>joyent-cloudapi</module>
+    <module>joyentblob</module>
     <module>joyentcloud</module>
     <module>fgcp</module>
     <module>fgcp-au</module>
