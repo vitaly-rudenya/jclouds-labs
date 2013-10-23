@@ -33,52 +33,53 @@ import static org.jclouds.reflect.Reflection2.typeToken;
  */
 public class JoyentApiMetadata extends BaseHttpApiMetadata<JoyentBlobClient> {
 
-    @Override
-    public Builder<?> toBuilder() {
-        return new ConcreteBuilder().fromApiMetadata(this);
-    }
+   @Override
+   public Builder<?> toBuilder() {
+      return new ConcreteBuilder().fromApiMetadata(this);
+   }
 
-    public JoyentApiMetadata() {
-        this(new ConcreteBuilder());
-    }
+   public JoyentApiMetadata() {
+      this(new ConcreteBuilder());
+   }
 
-    protected JoyentApiMetadata(Builder<?> builder) {
-        super(builder);
-    }
+   protected JoyentApiMetadata(Builder<?> builder) {
+      super(builder);
+   }
 
-    public static Properties defaultProperties() {
-        return BaseHttpApiMetadata.defaultProperties();
-    }
+   public static Properties defaultProperties() {
+      return BaseHttpApiMetadata.defaultProperties();
+   }
 
-    public abstract static class Builder<T extends Builder<T>> extends BaseHttpApiMetadata.Builder<JoyentBlobClient, T> {
-        @SuppressWarnings("deprecation")
-        protected Builder() {
-            super();
-            id("joyentblob")
-                    .name("Joyent Blob Service API")
-                    .defaultIdentity("foo")
-                    .defaultCredential("bar")
-                    .identityName("Account Name")
-                    .credentialName("Access Key")
-                    .version("1.0")
-                    .defaultEndpoint("https://us-east.manta.joyent.com")
-                    .documentation(URI.create("http://joyent.com/"))
-                    .defaultProperties(JoyentApiMetadata.defaultProperties())
-                    .view(typeToken(BlobStoreContext.class))
-                    .defaultModules(ImmutableSet.<Class<? extends Module>>of(JoyentBlobRestClientModule.class, JoyentBlobStoreContextModule.class));
+   public abstract static class Builder<T extends Builder<T>> extends BaseHttpApiMetadata.Builder<JoyentBlobClient, T> {
+      @SuppressWarnings("deprecation")
+      protected Builder() {
+         super();
+         id("joyentblob")
+                 .name("Joyent Blob Service API")
+                 .defaultIdentity("foo")
+                 .defaultCredential("bar")
+                 .identityName("Account Name")
+                 .credentialName("Access Key")
+                 .version("1.0")
+                 .defaultEndpoint("https://us-east.manta.joyent.com")
+                 .documentation(URI.create("http://joyent.com/"))
+                 .defaultProperties(JoyentApiMetadata.defaultProperties())
+                 .view(typeToken(BlobStoreContext.class))
+                 .defaultModules(ImmutableSet.<Class<? extends Module>>of(JoyentBlobRestClientModule.class,
+                         JoyentBlobStoreContextModule.class));
 
-        }
+      }
 
-        @Override
-        public JoyentApiMetadata build() {
-            return new JoyentApiMetadata(this);
-        }
-    }
+      @Override
+      public JoyentApiMetadata build() {
+         return new JoyentApiMetadata(this);
+      }
+   }
 
-    public static class ConcreteBuilder extends Builder<ConcreteBuilder> {
-        @Override
-        protected ConcreteBuilder self() {
-            return this;
-        }
-    }
+   public static class ConcreteBuilder extends Builder<ConcreteBuilder> {
+      @Override
+      protected ConcreteBuilder self() {
+         return this;
+      }
+   }
 }

@@ -23,8 +23,8 @@ package org.jclouds.joyent;
  * @author vitaly.rudenya
  */
 public class JoyentConstants {
-    public static final String JOYENT_CERT_FINGERPRINT = "joyent.cert.fingerprint";
-    public static final String JOYENT_CERT_CLASSPATH = "joyent.cert.classpath";
+   public static final String JOYENT_CERT_FINGERPRINT = "joyent.cert.fingerprint";
+   public static final String JOYENT_CERT_CLASSPATH = "joyent.cert.classpath";
 
-    public static final String STOR_PATH = "stor";
+   public static final String STOR_PATH = "stor";
 }

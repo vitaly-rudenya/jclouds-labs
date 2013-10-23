@@ -33,14 +33,14 @@ import javax.inject.Inject;
  */
 public class ParseBlobMetadataFromJoyentResponse extends JoyentBlobMetadataParser<MutableBlobMetadata> {
 
-    @Inject
-    public ParseBlobMetadataFromJoyentResponse(@org.jclouds.location.Provider
-                                               Supplier<Credentials> creds) {
-        super(creds);
-    }
+   @Inject
+   public ParseBlobMetadataFromJoyentResponse(@org.jclouds.location.Provider
+                                              Supplier<Credentials> creds) {
+      super(creds);
+   }
 
-    @Override
-    public MutableBlobMetadata apply(@Nullable HttpResponse input) {
-        return populateMetadata(new MutableBlobMetadataImpl(), input);
-    }
+   @Override
+   public MutableBlobMetadata apply(@Nullable HttpResponse input) {
+      return populateMetadata(new MutableBlobMetadataImpl(), input);
+   }
 }

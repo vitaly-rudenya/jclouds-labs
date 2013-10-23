@@ -32,10 +32,10 @@ import org.jclouds.joyent.blobstore.JoyentBlobStore;
  */
 public class JoyentBlobStoreContextModule extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
-        bind(AsyncBlobStore.class).to(JoyentAsyncBlobStore.class).in(Scopes.SINGLETON);
-        bind(BlobStore.class).to(JoyentBlobStore.class).in(Scopes.SINGLETON);
-    }
+   @Override
+   protected void configure() {
+      bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
+      bind(AsyncBlobStore.class).to(JoyentAsyncBlobStore.class).in(Scopes.SINGLETON);
+      bind(BlobStore.class).to(JoyentBlobStore.class).in(Scopes.SINGLETON);
+   }
 }

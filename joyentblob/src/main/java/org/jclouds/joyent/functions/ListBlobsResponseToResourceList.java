@@ -40,24 +40,24 @@ import java.util.Set;
 public class ListBlobsResponseToResourceList implements
         Function<Set<JoyentObject>, PageSet<? extends StorageMetadata>> {
 
-    public PageSet<? extends StorageMetadata> apply(Set<JoyentObject> form) {
-        Set<StorageMetadata> storageMetadatas = new HashSet<StorageMetadata>();
+   public PageSet<? extends StorageMetadata> apply(Set<JoyentObject> form) {
+      Set<StorageMetadata> storageMetadatas = new HashSet<StorageMetadata>();
 
-        for (JoyentObject joyentObject : form) {
-            StorageType storageType = null;
-            if (JoyentObject.TYPE_FOLDER.equals(joyentObject.getContentType())) {
-                storageType = StorageType.FOLDER;
-            } else if (JoyentObject.TYPE_BLOB.equals(joyentObject.getContentType())) {
-                storageType = StorageType.BLOB;
-            }
+      for (JoyentObject joyentObject : form) {
+         StorageType storageType = null;
+         if (JoyentObject.TYPE_FOLDER.equals(joyentObject.getContentType())) {
+            storageType = StorageType.FOLDER;
+         } else if (JoyentObject.TYPE_BLOB.equals(joyentObject.getContentType())) {
+            storageType = StorageType.BLOB;
+         }
 
-            Date creationDate = joyentObject.getLastModified();
-            @SuppressWarnings("unchecked") StorageMetadata storageMetadata = new StorageMetadataImpl(storageType, null,
-                    joyentObject.getName(), null, null, joyentObject.getEtag(), creationDate, creationDate,
-                    Collections.EMPTY_MAP);
-            storageMetadatas.add(storageMetadata);
-        }
+         Date creationDate = joyentObject.getLastModified();
+         @SuppressWarnings("unchecked") StorageMetadata storageMetadata = new StorageMetadataImpl(storageType, null,
+                 joyentObject.getName(), null, null, joyentObject.getEtag(), creationDate, creationDate,
+                 Collections.EMPTY_MAP);
+         storageMetadatas.add(storageMetadata);
+      }
 
-        return new PageSetImpl<StorageMetadata>(storageMetadatas, null);
-    }
+      return new PageSetImpl<StorageMetadata>(storageMetadatas, null);
+   }
 }

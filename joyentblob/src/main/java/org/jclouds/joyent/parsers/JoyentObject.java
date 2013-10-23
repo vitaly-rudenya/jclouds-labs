@@ -33,92 +33,92 @@ import java.util.Locale;
  */
 public class JoyentObject implements ObjectInfo {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'", Locale.ENGLISH);
-    public static final String TYPE_FOLDER = "directory";
-    public static final String TYPE_BLOB = "object";
+   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'", Locale.ENGLISH);
+   public static final String TYPE_FOLDER = "directory";
+   public static final String TYPE_BLOB = "object";
 
-    private String name;
-    private String type;
-    private String mtime;
-    private String etag;
-    private Long size;
+   private String name;
+   private String type;
+   private String mtime;
+   private String etag;
+   private Long size;
 
-    @Override
-    public URI getUri() {
-        return null;
-    }
+   @Override
+   public URI getUri() {
+      return null;
+   }
 
-    public String getName() {
-        return name;
-    }
+   public String getName() {
+      return name;
+   }
 
-    @Override
-    public byte[] getHash() {
-        return etag == null ? new byte[0] : etag.getBytes();
-    }
+   @Override
+   public byte[] getHash() {
+      return etag == null ? new byte[0] : etag.getBytes();
+   }
 
-    @Override
-    public Long getBytes() {
-        return size;
-    }
+   @Override
+   public Long getBytes() {
+      return size;
+   }
 
-    @Override
-    public String getContentType() {
-        return type;
-    }
+   @Override
+   public String getContentType() {
+      return type;
+   }
 
-    @Override
-    public Date getLastModified() {
-        try {
-            return mtime == null ? null : DATE_FORMAT.parse(mtime);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
+   @Override
+   public Date getLastModified() {
+      try {
+         return mtime == null ? null : DATE_FORMAT.parse(mtime);
+      } catch (ParseException e) {
+         return null;
+      }
+   }
 
-    @Override
-    public String getContainer() {
-        return null;
-    }
+   @Override
+   public String getContainer() {
+      return null;
+   }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+   public void setName(String name) {
+      this.name = name;
+   }
 
-    public String getType() {
-        return type;
-    }
+   public String getType() {
+      return type;
+   }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+   public void setType(String type) {
+      this.type = type;
+   }
 
-    public String getMtime() {
-        return mtime;
-    }
+   public String getMtime() {
+      return mtime;
+   }
 
-    public void setMtime(String mtime) {
-        this.mtime = mtime;
-    }
+   public void setMtime(String mtime) {
+      this.mtime = mtime;
+   }
 
-    public String getEtag() {
-        return etag;
-    }
+   public String getEtag() {
+      return etag;
+   }
 
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
+   public void setEtag(String etag) {
+      this.etag = etag;
+   }
 
-    public Long getSize() {
-        return size;
-    }
+   public Long getSize() {
+      return size;
+   }
 
-    public void setSize(Long size) {
-        this.size = size;
-    }
+   public void setSize(Long size) {
+      this.size = size;
+   }
 
-    @Override
-    public int compareTo(ObjectInfo o) {
-        return name.compareTo(o.getName());
-    }
+   @Override
+   public int compareTo(ObjectInfo o) {
+      return name.compareTo(o.getName());
+   }
 }

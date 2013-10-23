@@ -31,56 +31,56 @@ import java.util.Properties;
  */
 public class JoyentProviderMetadata extends BaseProviderMetadata {
 
-    public static final TypeToken<ApiContext<JoyentBlobClient>> CONTEXT_TOKEN =
-            new TypeToken<ApiContext<JoyentBlobClient>>() {
-                private static final long serialVersionUID = 1L;
-            };
+   public static final TypeToken<ApiContext<JoyentBlobClient>> CONTEXT_TOKEN =
+           new TypeToken<ApiContext<JoyentBlobClient>>() {
+              private static final long serialVersionUID = 1L;
+           };
 
-    public static Builder builder() {
-        return new Builder();
-    }
+   public static Builder builder() {
+      return new Builder();
+   }
 
-    @Override
-    public Builder toBuilder() {
-        return builder().fromProviderMetadata(this);
-    }
+   @Override
+   public Builder toBuilder() {
+      return builder().fromProviderMetadata(this);
+   }
 
-    public JoyentProviderMetadata() {
-        super(builder());
-    }
+   public JoyentProviderMetadata() {
+      super(builder());
+   }
 
-    public JoyentProviderMetadata(Builder builder) {
-        super(builder);
-    }
+   public JoyentProviderMetadata(Builder builder) {
+      super(builder);
+   }
 
-    public static Properties defaultProperties() {
-        return new Properties();
-    }
+   public static Properties defaultProperties() {
+      return new Properties();
+   }
 
-    public static class Builder extends BaseProviderMetadata.Builder {
+   public static class Builder extends BaseProviderMetadata.Builder {
 
-        protected Builder() {
-            id("joyentblob")
-                    .name("Joyent Service")
-                    .apiMetadata(new JoyentApiMetadata())
-                    .endpoint("https://us-east.manta.joyent.com")
-                    .homepage(URI.create("http://joyent.com/"))
-                    .console(URI.create("https://joyent.com/"))
-                    .linkedServices("joyentblob")
-                    .iso3166Codes("US-VA")
-                    .defaultProperties(JoyentProviderMetadata.defaultProperties());
-        }
+      protected Builder() {
+         id("joyentblob")
+                 .name("Joyent Service")
+                 .apiMetadata(new JoyentApiMetadata())
+                 .endpoint("https://us-east.manta.joyent.com")
+                 .homepage(URI.create("http://joyent.com/"))
+                 .console(URI.create("https://joyent.com/"))
+                 .linkedServices("joyentblob")
+                 .iso3166Codes("US-VA")
+                 .defaultProperties(JoyentProviderMetadata.defaultProperties());
+      }
 
-        @Override
-        public JoyentProviderMetadata build() {
-            return new JoyentProviderMetadata(this);
-        }
+      @Override
+      public JoyentProviderMetadata build() {
+         return new JoyentProviderMetadata(this);
+      }
 
-        @Override
-        public Builder fromProviderMetadata(
-                ProviderMetadata in) {
-            super.fromProviderMetadata(in);
-            return this;
-        }
-    }
+      @Override
+      public Builder fromProviderMetadata(
+              ProviderMetadata in) {
+         super.fromProviderMetadata(in);
+         return this;
+      }
+   }
 }

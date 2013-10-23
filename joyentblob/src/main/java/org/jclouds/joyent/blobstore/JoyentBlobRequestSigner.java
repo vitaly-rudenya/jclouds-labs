@@ -55,96 +55,99 @@ import java.util.TimeZone;
 @Singleton
 public class JoyentBlobRequestSigner implements HttpRequestFilter {
 
-    private static final Log LOG = LogFactory.getLog(JoyentBlobRequestSigner.class);
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy zzz", Locale.ENGLISH);
-    private static final String AUTHZ_HEADER = "Signature keyId=\"/%s/keys/%s\",algorithm=\"rsa-sha256\","
-            + "signature=\"%s\"";
+   private static final Log LOG = LogFactory.getLog(JoyentBlobRequestSigner.class);
 
-    private static final String SIGNING_ALGORITHM = "SHA256WithRSAEncryption";
-    private static final String AUTHZ_SIGNING_STRING = "date: %s";
+   //Joyent is using specific Date format to sign requests. So it's not possible to use SimpleDateFormatDateService here
+   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy zzz", Locale.ENGLISH);
 
-    private volatile KeyPair keyPair_;
-    private String identity;
+   private static final String AUTHZ_HEADER = "Signature keyId=\"/%s/keys/%s\",algorithm=\"rsa-sha256\","
+           + "signature=\"%s\"";
 
-    @Inject
-    @Named(JoyentConstants.JOYENT_CERT_FINGERPRINT)
-    private String fingerPrint_;
+   private static final String SIGNING_ALGORITHM = "SHA256WithRSAEncryption";
+   private static final String AUTHZ_SIGNING_STRING = "date: %s";
 
-    @Inject
-    @Named(JoyentConstants.JOYENT_CERT_CLASSPATH)
-    private String certClasspath_;
+   private volatile KeyPair keyPair_;
+   private String identity;
+
+   @Inject
+   @Named(JoyentConstants.JOYENT_CERT_FINGERPRINT)
+   private String fingerPrint_;
+
+   @Inject
+   @Named(JoyentConstants.JOYENT_CERT_CLASSPATH)
+   private String certClasspath_;
 
 
-    @Inject
-    public JoyentBlobRequestSigner(@org.jclouds.location.Provider
-                                   Supplier<Credentials> creds) {
-        identity = creds.get().identity;
-    }
+   @Inject
+   public JoyentBlobRequestSigner(@org.jclouds.location.Provider
+                                  Supplier<Credentials> creds) {
+      identity = creds.get().identity;
+   }
 
-    @Override
-    public HttpRequest filter(HttpRequest request) throws HttpException {
-        LOG.debug("signing request: " + request.getHeaders());
+   @Override
+   public HttpRequest filter(HttpRequest request) throws HttpException {
+      LOG.debug("signing request: " + request.getHeaders());
 
-        if (keyPair_ == null) {
-            synchronized (this) {
-                if (keyPair_ == null) {
-                    try {
-                        keyPair_ = getKeyPair(certClasspath_);
-                    } catch (IOException e) {
-                        LOG.error(e);
-                        throw new HttpException("Can't load key pair", e);
-                    }
-                }
+      if (keyPair_ == null) {
+         synchronized (this) {
+            if (keyPair_ == null) {
+               try {
+                  keyPair_ = getKeyPair(certClasspath_);
+               } catch (IOException e) {
+                  LOG.error(e);
+                  throw new HttpException("Can't load key pair", e);
+               }
             }
-        }
+         }
+      }
 
-        HttpRequest res = request;
+      HttpRequest res = request;
 
-        String reqURL = request.getEndpoint().toString();
-        String path = request.getEndpoint().getPath();
-        String storPath = "/" + identity + "/" + JoyentConstants.STOR_PATH;
-        if (!path.startsWith(storPath)) {
-            int pathInd = reqURL.lastIndexOf(path);
-            String newUrl = reqURL.substring(0, pathInd) + storPath + reqURL.substring(pathInd);
-            res = res.toBuilder().endpoint(newUrl).build();
-        }
+      String reqURL = request.getEndpoint().toString();
+      String path = request.getEndpoint().getPath();
+      String storPath = "/" + identity + "/" + JoyentConstants.STOR_PATH;
+      if (!path.startsWith(storPath)) {
+         int pathInd = reqURL.lastIndexOf(path);
+         String newUrl = reqURL.substring(0, pathInd) + storPath + reqURL.substring(pathInd);
+         res = res.toBuilder().endpoint(newUrl).build();
+      }
 
-        String date = request.getFirstHeaderOrNull(HttpHeaders.DATE);
-        if (date == null) {
-            Date now = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
-            date = DATE_FORMAT.format(now);
-            LOG.debug("setting date header: " + date);
-            res = res.toBuilder().addHeader(HttpHeaders.DATE, date).build();
-        }
-        try {
-            Signature sig = Signature.getInstance(SIGNING_ALGORITHM);
-            sig.initSign(keyPair_.getPrivate());
-            String signingString = String.format(AUTHZ_SIGNING_STRING, date);
-            sig.update(signingString.getBytes("UTF-8"));
-            byte[] signedDate = sig.sign();
-            byte[] encodedSignedDate = Base64.encode(signedDate);
-            String authzHeader = String.format(AUTHZ_HEADER, identity, fingerPrint_, new String(encodedSignedDate));
-            res = res.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, authzHeader).build();
-        } catch (NoSuchAlgorithmException e) {
-            throw new HttpException("invalid algorithm", e);
-        } catch (InvalidKeyException e) {
-            throw new HttpException("invalid key", e);
-        } catch (SignatureException e) {
-            throw new HttpException("invalid signature", e);
-        } catch (UnsupportedEncodingException e) {
-            throw new HttpException("invalid encoding", e);
-        }
+      String date = request.getFirstHeaderOrNull(HttpHeaders.DATE);
+      if (date == null) {
+         Date now = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
+         date = DATE_FORMAT.format(now);
+         LOG.debug("setting date header: " + date);
+         res = res.toBuilder().addHeader(HttpHeaders.DATE, date).build();
+      }
+      try {
+         Signature sig = Signature.getInstance(SIGNING_ALGORITHM);
+         sig.initSign(keyPair_.getPrivate());
+         String signingString = String.format(AUTHZ_SIGNING_STRING, date);
+         sig.update(signingString.getBytes("UTF-8"));
+         byte[] signedDate = sig.sign();
+         byte[] encodedSignedDate = Base64.encode(signedDate);
+         String authzHeader = String.format(AUTHZ_HEADER, identity, fingerPrint_, new String(encodedSignedDate));
+         res = res.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, authzHeader).build();
+      } catch (NoSuchAlgorithmException e) {
+         throw new HttpException("invalid algorithm", e);
+      } catch (InvalidKeyException e) {
+         throw new HttpException("invalid key", e);
+      } catch (SignatureException e) {
+         throw new HttpException("invalid signature", e);
+      } catch (UnsupportedEncodingException e) {
+         throw new HttpException("invalid encoding", e);
+      }
 
-        return res;
-    }
+      return res;
+   }
 
-    private static KeyPair getKeyPair(String keyPath) throws IOException {
-        BufferedReader br =
-                new BufferedReader(new InputStreamReader(JoyentBlobRequestSigner.class.getResourceAsStream(keyPath)));
-        Security.addProvider(new BouncyCastleProvider());
-        PEMReader pemReader = new PEMReader(br);
-        KeyPair kp = (KeyPair) pemReader.readObject();
-        pemReader.close();
-        return kp;
-    }
+   private static KeyPair getKeyPair(String keyPath) throws IOException {
+      BufferedReader br =
+              new BufferedReader(new InputStreamReader(JoyentBlobRequestSigner.class.getResourceAsStream(keyPath)));
+      Security.addProvider(new BouncyCastleProvider());
+      PEMReader pemReader = new PEMReader(br);
+      KeyPair kp = (KeyPair) pemReader.readObject();
+      pemReader.close();
+      return kp;
+   }
 }

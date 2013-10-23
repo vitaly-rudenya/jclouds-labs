@@ -46,63 +46,63 @@ import java.util.List;
 abstract class JoyentBlobMetadataParser<RETURN> implements Function<HttpResponse, RETURN>,
         InvocationContext<JoyentBlobMetadataParser<RETURN>> {
 
-    private static final Log LOGGER = LogFactory.getLog(ParseBlobFromJoyentResponse.class);
+   private static final Log LOGGER = LogFactory.getLog(ParseBlobFromJoyentResponse.class);
 
-    private String identity;
+   private String identity;
 
-    private String blobName;
-    private String container;
-    private URI uri;
+   private String blobName;
+   private String container;
+   private URI uri;
 
-    @Inject
-    public JoyentBlobMetadataParser(@org.jclouds.location.Provider
-                                    Supplier<Credentials> creds) {
-        identity = creds.get().identity;
-    }
+   @Inject
+   public JoyentBlobMetadataParser(@org.jclouds.location.Provider
+                                   Supplier<Credentials> creds) {
+      identity = creds.get().identity;
+   }
 
-    protected MutableBlobMetadata populateMetadata(MutableBlobMetadata blobMetadata, HttpResponse input) {
-        if (input != null) {
-            blobMetadata.setName(blobName);
-            blobMetadata.setContainer(container);
-            blobMetadata.setContentMetadata(input.getPayload().getContentMetadata());
+   protected MutableBlobMetadata populateMetadata(MutableBlobMetadata blobMetadata, HttpResponse input) {
+      if (input != null) {
+         blobMetadata.setName(blobName);
+         blobMetadata.setContainer(container);
+         blobMetadata.setContentMetadata(input.getPayload().getContentMetadata());
 
-            Collection<String> etagList = input.getHeaders().get("Etag");
-            blobMetadata.setETag(etagList.size() > 0 ? etagList.iterator().next() : null);
+         Collection<String> etagList = input.getHeaders().get("Etag");
+         blobMetadata.setETag(etagList.size() > 0 ? etagList.iterator().next() : null);
 
-            Collection<String> lastModifiedList = input.getHeaders().get(HttpHeaders.LAST_MODIFIED);
-            blobMetadata.setLastModified(lastModifiedList.size() > 0 ?
-                    new Date(lastModifiedList.iterator().next()) : null);
+         Collection<String> lastModifiedList = input.getHeaders().get(HttpHeaders.LAST_MODIFIED);
+         blobMetadata.setLastModified(lastModifiedList.size() > 0 ?
+                 new Date(lastModifiedList.iterator().next()) : null);
 
-            blobMetadata.setType(StorageType.BLOB);
-            blobMetadata.setUri(uri);
+         blobMetadata.setType(StorageType.BLOB);
+         blobMetadata.setUri(uri);
 
-        }
-        return blobMetadata;
-    }
+      }
+      return blobMetadata;
+   }
 
-    @Override
-    public JoyentBlobMetadataParser<RETURN> setContext(HttpRequest request) {
-        if (request instanceof GeneratedHttpRequest) {
+   @Override
+   public JoyentBlobMetadataParser<RETURN> setContext(HttpRequest request) {
+      if (request instanceof GeneratedHttpRequest) {
 
-            List args = ((GeneratedHttpRequest) request).getInvocation().getArgs();
+         List args = ((GeneratedHttpRequest) request).getInvocation().getArgs();
 
-            container = (String) args.get(0);
-            blobName = (String) args.get(1);
-        }
+         container = (String) args.get(0);
+         blobName = (String) args.get(1);
+      }
 
-        String reqURL = request.getEndpoint().toString();
-        String path = request.getEndpoint().getPath();
-        String storPath = "/" + identity + "/" + JoyentConstants.STOR_PATH;
-        if (!path.startsWith(storPath)) {
-            int pathInd = reqURL.lastIndexOf(path);
-            String newUrl = reqURL.substring(0, pathInd) + storPath + reqURL.substring(pathInd);
-            try {
-                uri = new URI(newUrl);
-            } catch (URISyntaxException e) {
-                LOGGER.warn("Can't parse URL " + newUrl, e);
-            }
-        }
+      String reqURL = request.getEndpoint().toString();
+      String path = request.getEndpoint().getPath();
+      String storPath = "/" + identity + "/" + JoyentConstants.STOR_PATH;
+      if (!path.startsWith(storPath)) {
+         int pathInd = reqURL.lastIndexOf(path);
+         String newUrl = reqURL.substring(0, pathInd) + storPath + reqURL.substring(pathInd);
+         try {
+            uri = new URI(newUrl);
+         } catch (URISyntaxException e) {
+            LOGGER.warn("Can't parse URL " + newUrl, e);
+         }
+      }
 
-        return this;
-    }
+      return this;
+   }
 }

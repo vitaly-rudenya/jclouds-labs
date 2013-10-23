@@ -36,13 +36,13 @@ import org.jclouds.rest.config.RestClientModule;
 @ConfiguresRestClient
 public class JoyentBlobRestClientModule extends RestClientModule<JoyentBlobClient, JoyentBlobAsyncClient> {
 
-    @Override
-    protected void configure() {
-        install(new BlobStoreObjectModule());
-        super.configure();
+   @Override
+   protected void configure() {
+      install(new BlobStoreObjectModule());
+      super.configure();
 
-        bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
-        bind(AsyncBlobStore.class).to(JoyentAsyncBlobStore.class).in(Scopes.SINGLETON);
-        bind(BlobStore.class).to(JoyentBlobStore.class).in(Scopes.SINGLETON);
-    }
+      bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
+      bind(AsyncBlobStore.class).to(JoyentAsyncBlobStore.class).in(Scopes.SINGLETON);
+      bind(BlobStore.class).to(JoyentBlobStore.class).in(Scopes.SINGLETON);
+   }
 }

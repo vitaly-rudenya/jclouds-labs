@@ -29,56 +29,56 @@ import java.util.Set;
  * @author vitaly.rudenya
  */
 public interface JoyentBlobClient {
-    @Provides
-    public Blob newBlob();
+   @Provides
+   public Blob newBlob();
 
-    /**
-     * Put Blob object into Joyent storage.
-     */
-    public String putBlob(String container, Blob object);
+   /**
+    * Put Blob object into Joyent storage.
+    */
+   public String putBlob(String container, Blob object);
 
-    /**
-     * Retrieve Blob from Joyent storage
-     */
-    public Blob getBlob(String container, String name);
+   /**
+    * Retrieve Blob from Joyent storage
+    */
+   public Blob getBlob(String container, String name);
 
-    /**
-     * Retrieve Blob metadata from Joyent storage
-     */
-    public BlobMetadata getBlobMetadata(String container, String name);
+   /**
+    * Retrieve Blob metadata from Joyent storage
+    */
+   public BlobMetadata getBlobMetadata(String container, String name);
 
-    /**
-     * Create new folder in the rood directory.
-     */
-    public boolean createContainer(String container);
+   /**
+    * Create new folder in the rood directory.
+    */
+   public boolean createContainer(String container);
 
-    /**
-     * List all objects from the root directory.
-     */
-    public Set<JoyentObject> listContainers();
+   /**
+    * List all objects from the root directory.
+    */
+   public Set<JoyentObject> listContainers();
 
-    /**
-     * List all objects from directory.
-     */
-    public Set<JoyentObject> listContainers(String container);
+   /**
+    * List all objects from directory.
+    */
+   public Set<JoyentObject> listContainers(String container);
 
-    /**
-     * Delete existing folder.
-     */
-    public boolean deleteContainer(String container);
+   /**
+    * Delete existing folder.
+    */
+   public boolean deleteContainer(String container);
 
-    /**
-     * Delete existing Blob.
-     */
-    public boolean removeBlob(String container, String name);
+   /**
+    * Delete existing Blob.
+    */
+   public boolean removeBlob(String container, String name);
 
-    /**
-     * Checks if container exists.
-     */
-    public boolean containerExists(String container);
+   /**
+    * Checks if container exists.
+    */
+   public boolean containerExists(String container);
 
-    /**
-     * Checks if Blob exists.
-     */
-    public boolean blobExists(String container, String name);
+   /**
+    * Checks if Blob exists.
+    */
+   public boolean blobExists(String container, String name);
 }

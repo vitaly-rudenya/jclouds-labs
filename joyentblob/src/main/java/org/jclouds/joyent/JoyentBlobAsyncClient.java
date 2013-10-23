@@ -53,104 +53,105 @@ import javax.ws.rs.PathParam;
 @RequestFilters(JoyentBlobRequestSigner.class)
 public interface JoyentBlobAsyncClient {
 
-    @Provides
-    public Blob newBlob();
+   @Provides
+   public Blob newBlob();
 
-    /**
-     * Put Blob object into Joyent storage.
-     */
-    @Named("PutBlob")
-    @PUT
-    @Path("{container}/{name}")
-    @ResponseParser(ParseETagHeader.class)
-    ListenableFuture<String> putBlob(
-            @PathParam("container") String container,
-            @PathParam("name") @ParamParser(BlobName.class) Blob object);
+   /**
+    * Put Blob object into Joyent storage.
+    */
+   @Named("PutBlob")
+   @PUT
+   @Path("{container}/{name}")
+   @ResponseParser(ParseETagHeader.class)
+   ListenableFuture<String> putBlob(
+           @PathParam("container") String container,
+           @PathParam("name") @ParamParser(BlobName.class) Blob object);
 
-    /**
-     * Retrieve Blob from Joyent storage
-     */    @Named("GetBlob")
-    @GET
-    @ResponseParser(ParseBlobFromJoyentResponse.class)
-    @Fallback(Fallbacks.NullOnNotFoundOr404.class)
-    @Path("/{container}/{name}")
-    ListenableFuture<Blob> getBlob(@PathParam("container") String container,
-                                   @PathParam("name") String name);
+   /**
+    * Retrieve Blob from Joyent storage
+    */
+   @Named("GetBlob")
+   @GET
+   @ResponseParser(ParseBlobFromJoyentResponse.class)
+   @Fallback(Fallbacks.NullOnNotFoundOr404.class)
+   @Path("/{container}/{name}")
+   ListenableFuture<Blob> getBlob(@PathParam("container") String container,
+                                  @PathParam("name") String name);
 
-    /**
-     * Retrieve Blob metadata from Joyent storage
-     */
-    @Named("GetBlobMetadata")
-    @GET
-    @ResponseParser(ParseBlobMetadataFromJoyentResponse.class)
-    @Fallback(Fallbacks.NullOnNotFoundOr404.class)
-    @Path("/{container}/{name}")
-    public ListenableFuture<BlobMetadata> getBlobMetadata(@PathParam("container") String container,
-                                                          @PathParam("name") String name);
+   /**
+    * Retrieve Blob metadata from Joyent storage
+    */
+   @Named("GetBlobMetadata")
+   @GET
+   @ResponseParser(ParseBlobMetadataFromJoyentResponse.class)
+   @Fallback(Fallbacks.NullOnNotFoundOr404.class)
+   @Path("/{container}/{name}")
+   public ListenableFuture<BlobMetadata> getBlobMetadata(@PathParam("container") String container,
+                                                         @PathParam("name") String name);
 
-    /**
-     * Create new folder in the rood directory.
-     */
-    @Named("CreateContainer")
-    @PUT
-    @Path("{container}")
-    @Headers(keys = {"Content-Type"}, values = {"application/json; type=directory"})
-    ListenableFuture<Boolean> createContainer(@PathParam("container") String container);
+   /**
+    * Create new folder in the rood directory.
+    */
+   @Named("CreateContainer")
+   @PUT
+   @Path("{container}")
+   @Headers(keys = {"Content-Type"}, values = {"application/json; type=directory"})
+   ListenableFuture<Boolean> createContainer(@PathParam("container") String container);
 
-    /**
-     * List all objects from the root directory.
-     */
-    @Named("ListContainers")
-    @GET
-    @ResponseParser(ParseObjectInfoListFromJoyentResponse.class)
-    @Fallback(Fallbacks.EmptyListOnNotFoundOr404.class)
-    ListenableFuture<PageSet<JoyentObject>> listContainers();
+   /**
+    * List all objects from the root directory.
+    */
+   @Named("ListContainers")
+   @GET
+   @ResponseParser(ParseObjectInfoListFromJoyentResponse.class)
+   @Fallback(Fallbacks.EmptyListOnNotFoundOr404.class)
+   ListenableFuture<PageSet<JoyentObject>> listContainers();
 
-    /**
-     * List all objects from directory.
-     */
-    @Named("ListContainers")
-    @GET
-    @ResponseParser(ParseObjectInfoListFromJoyentResponse.class)
-    @Path("{container}")
-    @Fallback(Fallbacks.EmptyListOnNotFoundOr404.class)
-    ListenableFuture<PageSet<JoyentObject>> listContainers(@PathParam("container") String container);
+   /**
+    * List all objects from directory.
+    */
+   @Named("ListContainers")
+   @GET
+   @ResponseParser(ParseObjectInfoListFromJoyentResponse.class)
+   @Path("{container}")
+   @Fallback(Fallbacks.EmptyListOnNotFoundOr404.class)
+   ListenableFuture<PageSet<JoyentObject>> listContainers(@PathParam("container") String container);
 
-    /**
-     * Delete existing folder.
-     */
-    @Named("DeleteContainer")
-    @DELETE
-    @Path("{container}")
-    @Fallback(Fallbacks.TrueOnNotFoundOr404.class)
-    ListenableFuture<Boolean> deleteContainer(@PathParam("container") String container);
+   /**
+    * Delete existing folder.
+    */
+   @Named("DeleteContainer")
+   @DELETE
+   @Path("{container}")
+   @Fallback(Fallbacks.TrueOnNotFoundOr404.class)
+   ListenableFuture<Boolean> deleteContainer(@PathParam("container") String container);
 
-    /**
-     * Delete existing Blob.
-     */
-    @Named("DeleteBlob")
-    @DELETE
-    @Path("{container}/{name}")
-    @Fallback(Fallbacks.TrueOnNotFoundOr404.class)
-    ListenableFuture<Boolean> removeBlob(@PathParam("container") String container,
-                                         @PathParam("name") String name);
+   /**
+    * Delete existing Blob.
+    */
+   @Named("DeleteBlob")
+   @DELETE
+   @Path("{container}/{name}")
+   @Fallback(Fallbacks.TrueOnNotFoundOr404.class)
+   ListenableFuture<Boolean> removeBlob(@PathParam("container") String container,
+                                        @PathParam("name") String name);
 
-    /**
-     * Checks if container exists.
-     */
-    @Named("GetContainerProperties")
-    @HEAD
-    @Path("{container}")
-    @Fallback(Fallbacks.FalseOnNotFoundOr404.class)
-    ListenableFuture<Boolean> containerExists(@PathParam("container") String container);
+   /**
+    * Checks if container exists.
+    */
+   @Named("GetContainerProperties")
+   @HEAD
+   @Path("{container}")
+   @Fallback(Fallbacks.FalseOnNotFoundOr404.class)
+   ListenableFuture<Boolean> containerExists(@PathParam("container") String container);
 
-    /**
-     * Checks if Blob exists.
-     */
-    @Named("GetBlobProperties")
-    @HEAD
-    @Path("{container}/{name}")
-    @Fallback(Fallbacks.FalseOnNotFoundOr404.class)
-    ListenableFuture<Boolean> blobExists(@PathParam("container") String container,
-                                         @PathParam("name") String name);
+   /**
+    * Checks if Blob exists.
+    */
+   @Named("GetBlobProperties")
+   @HEAD
+   @Path("{container}/{name}")
+   @Fallback(Fallbacks.FalseOnNotFoundOr404.class)
+   ListenableFuture<Boolean> blobExists(@PathParam("container") String container,
+                                        @PathParam("name") String name);
 }

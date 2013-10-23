@@ -37,6 +37,7 @@ import org.jclouds.collect.Memoized;
 import org.jclouds.domain.Location;
 import org.jclouds.joyent.JoyentBlobAsyncClient;
 import org.jclouds.joyent.functions.ListBlobsResponseToResourceList;
+import org.jclouds.blobstore.options.GetOptions;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,95 +56,95 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
 
-    private static final Log LOGGER = LogFactory.getLog(JoyentAsyncBlobStore.class);
+   private static final Log LOGGER = LogFactory.getLog(JoyentAsyncBlobStore.class);
 
-    private final JoyentBlobAsyncClient async;
-    private final ListeningExecutorService userExecutor;
-    private ListBlobsResponseToResourceList converter;
+   private final JoyentBlobAsyncClient async;
+   private final ListeningExecutorService userExecutor;
+   private ListBlobsResponseToResourceList converter;
 
-    @Inject
-    JoyentAsyncBlobStore(BlobStoreContext context, BlobUtils blobUtils,
-                         @Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
-                         ListBlobsResponseToResourceList converter,
-                         Supplier<Location> defaultLocation, @Memoized Supplier<Set<? extends Location>> locations,
-                         JoyentBlobAsyncClient async) {
-        super(context, blobUtils, userExecutor, defaultLocation, locations);
-        this.async = checkNotNull(async, "async");
-        this.userExecutor = checkNotNull(userExecutor, "userExecutor");
-        this.converter = checkNotNull(converter, "converter");
-    }
+   @Inject
+   JoyentAsyncBlobStore(BlobStoreContext context, BlobUtils blobUtils,
+                        @Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
+                        ListBlobsResponseToResourceList converter,
+                        Supplier<Location> defaultLocation, @Memoized Supplier<Set<? extends Location>> locations,
+                        JoyentBlobAsyncClient async) {
+      super(context, blobUtils, userExecutor, defaultLocation, locations);
+      this.async = checkNotNull(async, "async");
+      this.userExecutor = checkNotNull(userExecutor, "userExecutor");
+      this.converter = checkNotNull(converter, "converter");
+   }
 
-    @Override
-    public ListenableFuture<PageSet<? extends StorageMetadata>> list() {
-        return Futures.transform(async.listContainers(), converter, userExecutor);
-    }
+   @Override
+   public ListenableFuture<PageSet<? extends StorageMetadata>> list() {
+      return Futures.transform(async.listContainers(), converter, userExecutor);
+   }
 
-    @Override
-    public ListenableFuture<Boolean> containerExists(String container) {
-        return async.containerExists(container);
-    }
+   @Override
+   public ListenableFuture<Boolean> containerExists(String container) {
+      return async.containerExists(container);
+   }
 
-    @Override
-    public ListenableFuture<Boolean> createContainerInLocation(Location location, String container) {
-        return async.createContainer(container);
-    }
+   @Override
+   public ListenableFuture<Boolean> createContainerInLocation(Location location, String container) {
+      return async.createContainer(container);
+   }
 
-    @Override
-    public ListenableFuture<PageSet<? extends StorageMetadata>> list(String container, ListContainerOptions options) {
-        return Futures.transform(async.listContainers(container), converter, userExecutor);
-    }
+   @Override
+   public ListenableFuture<PageSet<? extends StorageMetadata>> list(String container, ListContainerOptions options) {
+      return Futures.transform(async.listContainers(container), converter, userExecutor);
+   }
 
-    @Override
-    public ListenableFuture<Blob> getBlob(String container, String key, org.jclouds.blobstore.options.GetOptions options) {
-        return async.getBlob(container, key);
-    }
+   @Override
+   public ListenableFuture<Blob> getBlob(String container, String key, GetOptions options) {
+      return async.getBlob(container, key);
+   }
 
-    @Override
-    public ListenableFuture<String> putBlob(String container, Blob blob) {
-        return async.putBlob(container, blob);
-    }
+   @Override
+   public ListenableFuture<String> putBlob(String container, Blob blob) {
+      return async.putBlob(container, blob);
+   }
 
-    @Override
-    public ListenableFuture<Void> removeBlob(String container, String key) {
-        async.removeBlob(container, key);
-        return null;
-    }
+   @Override
+   public ListenableFuture<Void> removeBlob(String container, String key) {
+      async.removeBlob(container, key);
+      return null;
+   }
 
-    @Override
-    public ListenableFuture<Boolean> blobExists(String container, String name) {
-        return async.blobExists(container, name);
-    }
+   @Override
+   public ListenableFuture<Boolean> blobExists(String container, String name) {
+      return async.blobExists(container, name);
+   }
 
-    @Override
-    public ListenableFuture<BlobMetadata> blobMetadata(String container, String key) {
-        return async.getBlobMetadata(container, key);
-    }
+   @Override
+   public ListenableFuture<BlobMetadata> blobMetadata(String container, String key) {
+      return async.getBlobMetadata(container, key);
+   }
 
-    @Override
-    protected boolean deleteAndVerifyContainerGone(String container) {
-        async.deleteContainer(container);
-        try {
-            return !containerExists(container).get();
-        } catch (InterruptedException e) {
-            LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
-            return true;
-        } catch (ExecutionException e) {
-            LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
-            return true;
-        }
-    }
+   @Override
+   protected boolean deleteAndVerifyContainerGone(String container) {
+      async.deleteContainer(container);
+      try {
+         return !containerExists(container).get();
+      } catch (InterruptedException e) {
+         LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
+         return true;
+      } catch (ExecutionException e) {
+         LOGGER.warn("deleteAndVerifyContainerGone operation execution fail", e);
+         return true;
+      }
+   }
 
-    @Override
-    public ListenableFuture<String> putBlob(String container, Blob blob, PutOptions options) {
-        if (options.isMultipart()) {
-            throw new UnsupportedOperationException("Multipart upload not supported in JoyentAsyncBlobStore");
-        }
-        return putBlob(container, blob);
-    }
+   @Override
+   public ListenableFuture<String> putBlob(String container, Blob blob, PutOptions options) {
+      if (options.isMultipart()) {
+         throw new UnsupportedOperationException("Multipart upload not supported in JoyentAsyncBlobStore");
+      }
+      return putBlob(container, blob);
+   }
 
-    @Override
-    public ListenableFuture<Boolean> createContainerInLocation(Location location, String container,
-                                                               CreateContainerOptions options) {
-        return async.createContainer(container);
-    }
+   @Override
+   public ListenableFuture<Boolean> createContainerInLocation(Location location, String container,
+                                                              CreateContainerOptions options) {
+      return async.createContainer(container);
+   }
 }

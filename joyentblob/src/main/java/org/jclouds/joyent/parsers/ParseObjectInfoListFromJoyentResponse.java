@@ -42,41 +42,41 @@ import java.util.Set;
  */
 public class ParseObjectInfoListFromJoyentResponse implements Function<HttpResponse, PageSet<ObjectInfo>> {
 
-    private static final Log LOG = LogFactory.getLog(ParseObjectInfoListFromJoyentResponse.class);
+   private static final Log LOG = LogFactory.getLog(ParseObjectInfoListFromJoyentResponse.class);
 
-    @Inject
-    private Json json;
+   @Inject
+   private Json json;
 
-    private static final TypeLiteral<PageSet<JoyentObject>> type = new TypeLiteral<PageSet<JoyentObject>>() {
-    };
+   private static final TypeLiteral<PageSet<JoyentObject>> type = new TypeLiteral<PageSet<JoyentObject>>() {
+   };
 
-    @Nullable
-    @Override
-    public PageSet<ObjectInfo> apply(@Nullable HttpResponse input) {
+   @Nullable
+   @Override
+   public PageSet<ObjectInfo> apply(@Nullable HttpResponse input) {
 
-        if (input != null) {
-            InputStream stream = input.getPayload().getInput();
+      if (input != null) {
+         InputStream stream = input.getPayload().getInput();
+         try {
             try {
-                try {
-                    StringWriter writer = new StringWriter();
-                    try {
-                        IOUtils.copy(stream, writer);
-                    } finally {
-                        stream.close();
-                    }
+               StringWriter writer = new StringWriter();
+               try {
+                  IOUtils.copy(stream, writer);
+               } finally {
+                  stream.close();
+               }
 
-                    String result = "[" + writer.toString().replaceAll("\\n\\{", ",{") + "]";
-                    Set<JoyentObject> objects = json.fromJson(result, type.getType());
-                    return new PageSetImpl<ObjectInfo>(objects, null);
+               String result = "[" + writer.toString().replaceAll("\\n\\{", ",{") + "]";
+               Set<JoyentObject> objects = json.fromJson(result, type.getType());
+               return new PageSetImpl<ObjectInfo>(objects, null);
 
-                } finally {
-                    if (stream != null)
-                        stream.close();
-                }
-            } catch (IOException ex) {
-                LOG.error(ex);
+            } finally {
+               if (stream != null)
+                  stream.close();
             }
-        }
-        return null;
-    }
+         } catch (IOException ex) {
+            LOG.error(ex);
+         }
+      }
+      return null;
+   }
 }

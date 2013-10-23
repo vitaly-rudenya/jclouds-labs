@@ -33,21 +33,21 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class ParseBlobPropertiesFromHeaders implements Function<HttpResponse, MutableBlobMetadata>,
         InvocationContext<ParseBlobPropertiesFromHeaders> {
-    private final ParseSystemAndUserMetadataFromHeaders blobMetadataParser;
+   private final ParseSystemAndUserMetadataFromHeaders blobMetadataParser;
 
-    @Inject
-    public ParseBlobPropertiesFromHeaders(ParseSystemAndUserMetadataFromHeaders blobMetadataParser) {
-        this.blobMetadataParser = blobMetadataParser;
-    }
+   @Inject
+   public ParseBlobPropertiesFromHeaders(ParseSystemAndUserMetadataFromHeaders blobMetadataParser) {
+      this.blobMetadataParser = blobMetadataParser;
+   }
 
-    public MutableBlobMetadata apply(HttpResponse from) {
-        return blobMetadataParser.apply(from);
-    }
+   public MutableBlobMetadata apply(HttpResponse from) {
+      return blobMetadataParser.apply(from);
+   }
 
-    @Override
-    public ParseBlobPropertiesFromHeaders setContext(HttpRequest request) {
-        checkArgument(request instanceof GeneratedHttpRequest, "note this handler requires a GeneratedHttpRequest");
-        blobMetadataParser.setContext(request);
-        return this;
-    }
+   @Override
+   public ParseBlobPropertiesFromHeaders setContext(HttpRequest request) {
+      checkArgument(request instanceof GeneratedHttpRequest, "note this handler requires a GeneratedHttpRequest");
+      blobMetadataParser.setContext(request);
+      return this;
+   }
 }

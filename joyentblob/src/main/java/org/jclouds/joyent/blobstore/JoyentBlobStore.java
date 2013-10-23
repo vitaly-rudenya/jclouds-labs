@@ -44,93 +44,93 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Singleton
 public class JoyentBlobStore extends BaseBlobStore {
-    private final JoyentBlobClient sync;
+   private final JoyentBlobClient sync;
 
-    private ListBlobsResponseToResourceList listBlobsResponseToResourceList;
+   private ListBlobsResponseToResourceList listBlobsResponseToResourceList;
 
-    @Inject
-    JoyentBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,
-                    @Memoized Supplier<Set<? extends Location>> locations, JoyentBlobClient sync,
-                    ListBlobsResponseToResourceList listBlobsResponseToResourceList) {
-        super(context, blobUtils, defaultLocation, locations);
-        this.sync = checkNotNull(sync, "sync");
-        this.listBlobsResponseToResourceList = listBlobsResponseToResourceList;
-    }
+   @Inject
+   JoyentBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,
+                   @Memoized Supplier<Set<? extends Location>> locations, JoyentBlobClient sync,
+                   ListBlobsResponseToResourceList listBlobsResponseToResourceList) {
+      super(context, blobUtils, defaultLocation, locations);
+      this.sync = checkNotNull(sync, "sync");
+      this.listBlobsResponseToResourceList = listBlobsResponseToResourceList;
+   }
 
-    @Override
-    public PageSet<? extends StorageMetadata> list() {
-        return listBlobsResponseToResourceList.apply(sync.listContainers());
-    }
+   @Override
+   public PageSet<? extends StorageMetadata> list() {
+      return listBlobsResponseToResourceList.apply(sync.listContainers());
+   }
 
-    @Override
-    public boolean containerExists(String container) {
-        return sync.containerExists(container);
-    }
+   @Override
+   public boolean containerExists(String container) {
+      return sync.containerExists(container);
+   }
 
-    @Override
-    public boolean createContainerInLocation(Location location, String container) {
-        //We have only one location
-        return sync.createContainer(container);
-    }
+   @Override
+   public boolean createContainerInLocation(Location location, String container) {
+      //We have only one location
+      return sync.createContainer(container);
+   }
 
-    @Override
-    public PageSet<? extends StorageMetadata> list(String container, ListContainerOptions options) {
-        return listBlobsResponseToResourceList.apply(sync.listContainers(container));
-    }
+   @Override
+   public PageSet<? extends StorageMetadata> list(String container, ListContainerOptions options) {
+      return listBlobsResponseToResourceList.apply(sync.listContainers(container));
+   }
 
-    @Override
-    public boolean blobExists(String container, String key) {
-        return sync.blobExists(container, key);
-    }
+   @Override
+   public boolean blobExists(String container, String key) {
+      return sync.blobExists(container, key);
+   }
 
-    /**
-     * This implementation invokes {@link JoyentBlobClient#getBlob}
-     *
-     * @param container container name
-     * @param key       blob key
-     */
-    @Override
-    public Blob getBlob(String container, String key, GetOptions options) {
-        return sync.getBlob(container, key);
-    }
+   /**
+    * This implementation invokes {@link JoyentBlobClient#getBlob}
+    *
+    * @param container container name
+    * @param key       blob key
+    */
+   @Override
+   public Blob getBlob(String container, String key, GetOptions options) {
+      return sync.getBlob(container, key);
+   }
 
-    /**
-     * @param container container name
-     * @param blob      object
-     */
-    @Override
-    public String putBlob(String container, Blob blob) {
-        return sync.putBlob(container, blob);
-    }
+   /**
+    * @param container container name
+    * @param blob      object
+    */
+   @Override
+   public String putBlob(String container, Blob blob) {
+      return sync.putBlob(container, blob);
+   }
 
-    /**
-     * @param container container name
-     * @param blob      object
-     */
-    @Override
-    public String putBlob(String container, Blob blob, PutOptions options) {
-        return putBlob(container, blob);
-    }
+   /**
+    * @param container container name
+    * @param blob      object
+    */
+   @Override
+   public String putBlob(String container, Blob blob, PutOptions options) {
+      return putBlob(container, blob);
+   }
 
-    @Override
-    public void removeBlob(String container, String key) {
-        sync.removeBlob(container, key);
-    }
+   @Override
+   public void removeBlob(String container, String key) {
+      sync.removeBlob(container, key);
+   }
 
-    @Override
-    public BlobMetadata blobMetadata(String container, String key) {
-        return sync.getBlobMetadata(container, key);
-    }
+   @Override
+   public BlobMetadata blobMetadata(String container, String key) {
+      return sync.getBlobMetadata(container, key);
+   }
 
-    @Override
-    protected boolean deleteAndVerifyContainerGone(String container) {
-        sync.deleteContainer(container);
-        return !containerExists(container);
-    }
+   @Override
+   protected boolean deleteAndVerifyContainerGone(String container) {
+      sync.deleteContainer(container);
+      return !containerExists(container);
+   }
 
-    @Override
-    public boolean createContainerInLocation(Location location, String container, CreateContainerOptions options) {
-        //We have only one location
-        return sync.createContainer(container);
-    }
+   @Override
+   public boolean createContainerInLocation(Location location, String container, CreateContainerOptions options) {
+      //We have only one location
+      return sync.createContainer(container);
+   }
 }

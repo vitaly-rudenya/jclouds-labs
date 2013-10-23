@@ -34,24 +34,24 @@ import javax.inject.Singleton;
 public class ParseBlobFromHeadersAndHttpContent implements Function<HttpResponse, Blob>,
         InvocationContext<ParseBlobFromHeadersAndHttpContent> {
 
-    private final Blob.Factory blobFactory;
+   private final Blob.Factory blobFactory;
 
-    @Inject
-    public ParseBlobFromHeadersAndHttpContent(Blob.Factory blobFactory) {
-        this.blobFactory = blobFactory;
-    }
+   @Inject
+   public ParseBlobFromHeadersAndHttpContent(Blob.Factory blobFactory) {
+      this.blobFactory = blobFactory;
+   }
 
-    public Blob apply(HttpResponse from) {
-        Blob blob = blobFactory.create(null);
+   public Blob apply(HttpResponse from) {
+      Blob blob = blobFactory.create(null);
 
-        blob.getAllHeaders().putAll(from.getHeaders());
-        blob.setPayload(from.getPayload());
-        return blob;
-    }
+      blob.getAllHeaders().putAll(from.getHeaders());
+      blob.setPayload(from.getPayload());
+      return blob;
+   }
 
-    @Override
-    public ParseBlobFromHeadersAndHttpContent setContext(HttpRequest request) {
-        return this;
-    }
+   @Override
+   public ParseBlobFromHeadersAndHttpContent setContext(HttpRequest request) {
+      return this;
+   }
 
 }
