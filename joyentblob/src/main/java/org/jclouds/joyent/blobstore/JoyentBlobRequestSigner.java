@@ -19,6 +19,7 @@ package org.jclouds.joyent.blobstore;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.util.encoders.Base64;
 import org.jclouds.domain.Credentials;
@@ -126,6 +127,7 @@ public class JoyentBlobRequestSigner implements HttpRequestFilter {
       BufferedReader br =
               new BufferedReader(new InputStreamReader(JoyentBlobRequestSigner.class.getResourceAsStream(keyPath)));
 
+      Security.addProvider(new BouncyCastleProvider());
       PEMReader pemReader = new PEMReader(br);
       try {
          return (KeyPair) pemReader.readObject();

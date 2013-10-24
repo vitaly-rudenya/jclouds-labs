@@ -48,15 +48,8 @@ import static org.testng.Assert.assertTrue;
 @Test(singleThreaded = true)
 public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationTest {
 
-   private static final String PROVIDER = "joyentblob";
-   private static final String USER_NAME = "altoros2";
-   private static final String BLOB_NAME = "jcloudsTest";
-   private static final String BLOB_NAME_2 = "jcloudsTest2";
-   private static final String CERT_FINGERPRINT = "04:92:7b:23:bc:08:4f:d7:3b:5a:38:9e:4a:17:2e:df";
-   private static final String CERT_CLASSPATH = "/data/id_rsa"; //todo your certificate path
-
    public JoyentObjectStorageClientLiveTest() {
-      provider = PROVIDER;
+      provider = TestConstants.PROVIDER;
    }
 
    public JoyentBlobClient getApi() {
@@ -93,15 +86,15 @@ public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationT
       blob.setPayload(getClass().getResourceAsStream("/data/Master-Yoda.jpg"));
       Payloads.calculateMD5(blob);
       blob.getMetadata().getContentMetadata().setContentType("image/jpeg");
-      blob.getMetadata().setName(BLOB_NAME);
+      blob.getMetadata().setName(TestConstants.BLOB_NAME);
 
       String container = getContainerName();
       blob.getMetadata().setContainer(container);
 
       joyentBlobClient.putBlob(container, blob);
 
-      assertTrue(joyentBlobClient.blobExists(container, BLOB_NAME));
-      Blob joyentBlob = joyentBlobClient.getBlob(container, BLOB_NAME);
+      assertTrue(joyentBlobClient.blobExists(container, TestConstants.BLOB_NAME));
+      Blob joyentBlob = joyentBlobClient.getBlob(container, TestConstants.BLOB_NAME);
       assertNotNull(joyentBlob);
       assertEquals(blob.getPayload().getContentMetadata().getContentMD5(),
               joyentBlob.getPayload().getContentMetadata().getContentMD5());
@@ -110,7 +103,7 @@ public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationT
    @Test(enabled = true)
    public void testPutBlobWithBlobStore() throws Exception {
       BlobStore blobStore = view.getBlobStore();
-      Blob newBlob = blobStore.blobBuilder(BLOB_NAME_2)
+      Blob newBlob = blobStore.blobBuilder(TestConstants.BLOB_NAME_2)
                               .payload(getClass().getResourceAsStream("/data/Master-Yoda.jpg"))
                               .calculateMD5()
                               .contentType("image/jpeg")
@@ -119,8 +112,8 @@ public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationT
       String container = getContainerName();
       blobStore.putBlob(container, newBlob);
 
-      assertTrue(blobStore.blobExists(container, BLOB_NAME_2));
-      Blob joyentBlob = blobStore.getBlob(container, BLOB_NAME_2);
+      assertTrue(blobStore.blobExists(container, TestConstants.BLOB_NAME_2));
+      Blob joyentBlob = blobStore.getBlob(container, TestConstants.BLOB_NAME_2);
       assertNotNull(joyentBlob);
    }
 
@@ -132,7 +125,7 @@ public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationT
 
       // Test PUT with string data, ETag hash, and a piece of metadata
       Blob object = getApi().newBlob();
-      object.getMetadata().setName(BLOB_NAME);
+      object.getMetadata().setName(TestConstants.BLOB_NAME);
       object.setPayload(data);
       Payloads.calculateMD5(object);
       object.getMetadata().getContentMetadata().setContentType("text/plain");
@@ -164,27 +157,27 @@ public class JoyentObjectStorageClientLiveTest extends BaseBlobStoreIntegrationT
       assertEquals(newEtag, getBlob.getMetadata().getETag());
 
       // test listing
-      Blob response = getApi().getBlob(privateContainer, BLOB_NAME);
+      Blob response = getApi().getBlob(privateContainer, TestConstants.BLOB_NAME);
       assertEquals(response.getMetadata().getName(), object.getMetadata().getName());
 
       ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes(Charsets.UTF_8));
       object = getApi().newBlob();
-      object.getMetadata().setName(BLOB_NAME_2);
+      object.getMetadata().setName(TestConstants.BLOB_NAME_2);
       object.setPayload(bais);
       object.getPayload().getContentMetadata().setContentLength((long) data.getBytes().length);
       assertEquals(base16().lowerCase().encode(md5),
               base16().lowerCase().encode(getBlob.getMetadata().getContentMetadata().getContentMD5()));
 
 
-      getApi().removeBlob(privateContainer, BLOB_NAME);
-      getApi().removeBlob(privateContainer, BLOB_NAME_2);
+      getApi().removeBlob(privateContainer, TestConstants.BLOB_NAME);
+      getApi().removeBlob(privateContainer, TestConstants.BLOB_NAME_2);
    }
 
    protected Properties setupProperties() {
       Properties overrides = super.setupProperties();
-      overrides.setProperty(Constants.PROPERTY_IDENTITY, USER_NAME);
-      overrides.setProperty(JoyentConstants.JOYENT_CERT_FINGERPRINT, CERT_FINGERPRINT);
-      overrides.setProperty(JoyentConstants.JOYENT_CERT_CLASSPATH, CERT_CLASSPATH);
+      overrides.setProperty(Constants.PROPERTY_IDENTITY, TestConstants.USER_NAME);
+      overrides.setProperty(JoyentConstants.JOYENT_CERT_FINGERPRINT, TestConstants.CERT_FINGERPRINT);
+      overrides.setProperty(JoyentConstants.JOYENT_CERT_CLASSPATH, TestConstants.CERT_CLASSPATH);
       return overrides;
    }
 }
