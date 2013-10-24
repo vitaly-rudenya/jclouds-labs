@@ -38,8 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Date: 18.10.13
- * Time: 5:15
+ * Generic Joyent JSON response parser.
  *
  * @author vitaly.rudenya
  */

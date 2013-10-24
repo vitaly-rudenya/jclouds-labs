@@ -35,8 +35,7 @@ import java.io.StringWriter;
 import java.util.Set;
 
 /**
- * Date: 15.10.13
- * Time: 11:10
+ * Parse Joyent JSON response.
  *
  * @author vitaly.rudenya
  */

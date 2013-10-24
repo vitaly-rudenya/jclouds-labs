@@ -17,14 +17,24 @@
 package org.jclouds.joyent;
 
 /**
- * Date: 10.10.13
- * Time: 18:34
+ * Properties constants for Joyent provider API.
  *
  * @author vitaly.rudenya
  */
 public class JoyentConstants {
+
+   /**
+    * Joyent certificate fingerprint.
+    */
    public static final String JOYENT_CERT_FINGERPRINT = "joyent.cert.fingerprint";
+
+   /**
+    * Class path to Joyent certificate.
+    */
    public static final String JOYENT_CERT_CLASSPATH = "joyent.cert.classpath";
 
+   /**
+    * Default Joyent storage path.
+    */
    public static final String STOR_PATH = "stor";
 }

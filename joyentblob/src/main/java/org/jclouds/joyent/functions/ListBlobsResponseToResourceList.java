@@ -31,9 +31,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Date: 15.10.13
- * Time: 10:35
- *
  * @author vitaly.rudenya
  */
 @Singleton

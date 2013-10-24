@@ -23,8 +23,7 @@ import java.net.URI;
 import java.util.Date;
 
 /**
- * Date: 15.10.13
- * Time: 11:55
+ * Joyent object bean.
  *
  * @author vitaly.rudenya
  */

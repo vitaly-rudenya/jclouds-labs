@@ -42,16 +42,16 @@ import javax.ws.rs.HEAD;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.io.Closeable;
 
 /**
- * Date: 30.09.13
- * Time: 10:38
+ * Joyent Blob storage Async client
  *
  * @author vitaly.rudenya
  */
 @Path("/")
 @RequestFilters(JoyentBlobRequestSigner.class)
-public interface JoyentBlobAsyncClient {
+public interface JoyentBlobAsyncClient extends Closeable {
 
    @Provides
    public Blob newBlob();

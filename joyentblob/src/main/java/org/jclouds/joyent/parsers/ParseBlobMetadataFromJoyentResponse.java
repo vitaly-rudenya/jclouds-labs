@@ -26,8 +26,7 @@ import org.jclouds.javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
- * Date: 17.10.13
- * Time: 9:03
+ * Creates Blob metadata from Joyent JSON response.
  *
  * @author vitaly.rudenya
  */

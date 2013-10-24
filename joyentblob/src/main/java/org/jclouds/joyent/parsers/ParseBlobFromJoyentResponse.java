@@ -27,37 +27,36 @@ import org.jclouds.joyent.JoyentBlobClient;
 import javax.inject.Inject;
 
 /**
- * Date: 17.10.13
- * Time: 9:03
+ * Creates Blob object from Joyent response.
  *
  * @author vitaly.rudenya
  */
 public class ParseBlobFromJoyentResponse extends JoyentBlobMetadataParser<Blob> {
 
-    @Inject
-    private JoyentBlobClient sync;
+   @Inject
+   private JoyentBlobClient sync;
 
-    @Inject
-    public ParseBlobFromJoyentResponse(@org.jclouds.location.Provider
-                                       Supplier<Credentials> creds) {
-        super(creds);
-    }
+   @Inject
+   public ParseBlobFromJoyentResponse(@org.jclouds.location.Provider
+                                      Supplier<Credentials> creds) {
+      super(creds);
+   }
 
-    @Nullable
-    @Override
-    public Blob apply(@Nullable HttpResponse input) {
+   @Nullable
+   @Override
+   public Blob apply(@Nullable HttpResponse input) {
 
-        if (input != null) {
-            Payload payload = input.getPayload();
+      if (input != null) {
+         Payload payload = input.getPayload();
 
-            Blob blob = sync.newBlob();
-            blob.setPayload(payload);
-            blob.setAllHeaders(input.getHeaders());
+         Blob blob = sync.newBlob();
+         blob.setPayload(payload);
+         blob.setAllHeaders(input.getHeaders());
 
-            populateMetadata(blob.getMetadata(), input);
+         populateMetadata(blob.getMetadata(), input);
 
-            return blob;
-        }
-        return null;
-    }
+         return blob;
+      }
+      return null;
+   }
 }
