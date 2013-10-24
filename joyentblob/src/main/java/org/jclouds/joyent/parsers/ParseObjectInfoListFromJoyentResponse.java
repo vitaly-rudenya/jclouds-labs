@@ -17,8 +17,8 @@
 package org.jclouds.joyent.parsers;
 
 import com.google.common.base.Function;
+import com.google.common.io.ByteStreams;
 import com.google.inject.TypeLiteral;
-import org.apache.commons.io.IOUtils;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.internal.PageSetImpl;
 import org.jclouds.http.HttpResponse;
@@ -31,7 +31,6 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Set;
 
 /**
@@ -58,14 +57,14 @@ public class ParseObjectInfoListFromJoyentResponse implements Function<HttpRespo
          InputStream stream = input.getPayload().getInput();
          try {
             try {
-               StringWriter writer = new StringWriter();
+               byte[] response;
                try {
-                  IOUtils.copy(stream, writer);
+                  response = ByteStreams.toByteArray(stream);
                } finally {
                   stream.close();
                }
 
-               String result = "[" + writer.toString().replaceAll("\\n\\{", ",{") + "]";
+               String result = "[" + new String(response).replaceAll("\\n\\{", ",{") + "]";
                Set<JoyentObject> objects = json.fromJson(result, type.getType());
                return new PageSetImpl<ObjectInfo>(objects, null);
 

@@ -17,6 +17,7 @@
 package org.jclouds.joyent.functions;
 
 import com.google.common.base.Function;
+import com.google.inject.Singleton;
 import org.jclouds.blobstore.domain.MutableBlobMetadata;
 import org.jclouds.blobstore.functions.ParseSystemAndUserMetadataFromHeaders;
 import org.jclouds.http.HttpRequest;
@@ -31,6 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * @author vitaly.rudenya
  */
+@Singleton
 public class ParseBlobPropertiesFromHeaders implements Function<HttpResponse, MutableBlobMetadata>,
         InvocationContext<ParseBlobPropertiesFromHeaders> {
    private final ParseSystemAndUserMetadataFromHeaders blobMetadataParser;

@@ -120,9 +120,12 @@ public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
 
    @Override
    protected boolean deleteAndVerifyContainerGone(String container) {
-      async.deleteContainer(container);
+      ListenableFuture<Boolean> deleteResult = async.deleteContainer(container);
+
       try {
-         return !containerExists(container).get();
+         if (deleteResult.get()) {
+            return !containerExists(container).get();
+         }
       } catch (InterruptedException e) {
          logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
          return true;
@@ -130,6 +133,8 @@ public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
          logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
          return true;
       }
+
+      return true;
    }
 
    @Override

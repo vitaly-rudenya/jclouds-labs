@@ -18,9 +18,7 @@ package org.jclouds.joyent.functions;
 
 import com.google.common.base.Function;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
-import org.jclouds.rest.InvocationContext;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,8 +29,7 @@ import javax.inject.Singleton;
  * @author vitaly.rudenya
  */
 @Singleton
-public class ParseBlobFromHeadersAndHttpContent implements Function<HttpResponse, Blob>,
-        InvocationContext<ParseBlobFromHeadersAndHttpContent> {
+public class ParseBlobFromHeadersAndHttpContent implements Function<HttpResponse, Blob> {
 
    private final Blob.Factory blobFactory;
 
@@ -48,10 +45,4 @@ public class ParseBlobFromHeadersAndHttpContent implements Function<HttpResponse
       blob.setPayload(from.getPayload());
       return blob;
    }
-
-   @Override
-   public ParseBlobFromHeadersAndHttpContent setContext(HttpRequest request) {
-      return this;
-   }
-
 }

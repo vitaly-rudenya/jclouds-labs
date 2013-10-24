@@ -19,7 +19,6 @@ package org.jclouds.joyent.blobstore;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.util.encoders.Base64;
 import org.jclouds.domain.Credentials;
@@ -36,12 +35,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.security.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,18 +63,19 @@ public class JoyentBlobRequestSigner implements HttpRequestFilter {
 
    private final KeyPair keyPair;
    private final String identity;
-
-   @Inject
-   @Named(JoyentConstants.JOYENT_CERT_FINGERPRINT)
-   private String fingerPrint;
+   private final String fingerPrint;
 
    @Inject
    public JoyentBlobRequestSigner(@org.jclouds.location.Provider
                                   Supplier<Credentials> creds,
                                   @Named(JoyentConstants.JOYENT_CERT_CLASSPATH)
-                                  String certClasspath) throws IOException {
+                                  String certClasspath,
+                                  @Named(JoyentConstants.JOYENT_CERT_FINGERPRINT)
+                                  String fingerPrint) throws IOException {
+
       identity = creds.get().identity;
       keyPair = getKeyPair(certClasspath);
+      this.fingerPrint = fingerPrint;
    }
 
    @Override
@@ -130,7 +125,7 @@ public class JoyentBlobRequestSigner implements HttpRequestFilter {
    private static KeyPair getKeyPair(String keyPath) throws IOException {
       BufferedReader br =
               new BufferedReader(new InputStreamReader(JoyentBlobRequestSigner.class.getResourceAsStream(keyPath)));
-      Security.addProvider(new BouncyCastleProvider());
+
       PEMReader pemReader = new PEMReader(br);
       try {
          return (KeyPair) pemReader.readObject();
