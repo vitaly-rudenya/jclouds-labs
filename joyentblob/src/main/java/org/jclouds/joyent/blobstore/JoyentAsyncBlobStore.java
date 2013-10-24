@@ -17,6 +17,7 @@
 package org.jclouds.joyent.blobstore;
 
 import com.google.common.base.Supplier;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -43,7 +44,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -126,15 +126,11 @@ public class JoyentAsyncBlobStore extends BaseAsyncBlobStore {
          if (deleteResult.get()) {
             return !containerExists(container).get();
          }
-      } catch (InterruptedException e) {
-         logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
-         return true;
-      } catch (ExecutionException e) {
-         logger.warn(e, "deleteAndVerifyContainerGone operation execution fail");
-         return true;
+      } catch (Exception e) {
+         throw Throwables.propagate(e);
       }
 
-      return true;
+      return false;
    }
 
    @Override
